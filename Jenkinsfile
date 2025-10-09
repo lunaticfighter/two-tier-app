@@ -1,65 +1,51 @@
-@Library("Shared") _
-pipeline{
-    
-    agent { label "dev"};
-    
-    stages{
-        stage("Code Clone"){
-            steps{
-               script{
-                   clone("https://github.com/LondheShubham153/two-tier-flask-app.git", "master")
-               }
-            }
-        }
-        stage("Trivy File System Scan"){
-            steps{
-                script{
-                    trivy_fs()
-                }
-            }
-        }
-        stage("Build"){
-            steps{
-                sh "docker build -t two-tier-flask-app ."
-            }
-            
-        }
-        stage("Test"){
-            steps{
-                echo "Developer / Tester tests likh ke dega..."
-            }
-            
-        }
-        stage("Push to Docker Hub"){
-            steps{
-                script{
-                    docker_push("dockerHubCreds","two-tier-flask-app")
-                }  
-            }
-        }
-        stage("Deploy"){
-            steps{
-                sh "docker compose up -d --build flask-app"
-            }
-        }
+pipeline {
+
+  agent any
+
+  environment {
+
+    DOCKER_USRNAME = 'jspunit00@gmail.com'
+    //GIT_COMMIT_SHORT = 'env.GIT_COMMIT_SHORT'
+  }
+
+  stages {
+
+    stage('Scm Checkout') {
+      steps {
+        checkout scm
+      }
     }
 
-post{
-        success{
-            script{
-                emailext from: 'mentor@trainwithshubham.com',
-                to: 'mentor@trainwithshubham.com',
-                body: 'Build success for Demo CICD App',
-                subject: 'Build success for Demo CICD App'
-            }
+    stage('Set Environment Variables') {
+      steps {
+        script {
+          env.GIT_COMMIT_SHORT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim() //with env. It is global — available in all stages of the pipeline.
+          echo "The current Build Tag is: ${env.BUILD_TAG}"
+
         }
-        failure{
-            script{
-                emailext from: 'mentor@trainwithshubham.com',
-                to: 'mentor@trainwithshubham.com',
-                body: 'Build Failed for Demo CICD App',
-                subject: 'Build Failed for Demo CICD App'
-            }
-        }
+      }
     }
+
+    stage('Build Docker image') {
+      steps {
+        script {
+          sh " docker build -t jspunit00/two-tier-app:${env.GIT_COMMIT_SHORT} ."
+        }
+      }
+    }
+
+    stage('Push the Docker Image to Docker Hub') {
+      steps {
+        script {
+          withCredentials([string(credentialsId: 'dockercreds', variable: 'dockercreds')]) {
+            sh "docker login -u ${DOCKER_USRNAME} -p ${docketcreds}"
+          }
+          sh "docker push jspunit00/docker-sample:${env.GIT_COMMIT_SHORT}"
+        }
+      }
+
+    }
+
+  }
+
 }
