@@ -1,4 +1,4 @@
-pipeline {
+peline {
 
   agent any
 
@@ -19,8 +19,9 @@ pipeline {
     stage('Set Environment Variables') {
       steps {
         script {
-          env.GIT_COMMIT_SHORT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim() //with env. It is global — available in all stages of the pipeline.
-          echo "The current Build Tag is: ${env.BUILD_TAG}"
+          env.GIT_COMMIT_SHORT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim() 
+            echo "The current Build Tag is: ${env.BUILD_TAG}"
+            echo "The current commit Tag is: ${env.GIT_COMMIT_SHORT}"
 
         }
       }
@@ -28,3 +29,5 @@ pipeline {
   }
 
 }
+
+
