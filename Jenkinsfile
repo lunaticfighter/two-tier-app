@@ -39,10 +39,10 @@ pipeline {
     stage('Push Docker Image to Docker Hub') {
   steps {
     withCredentials([usernamePassword(credentialsId: 'dockercreds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-      sh '''
+      sh """
         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USRNAME" --password-stdin
         docker push jspunit00/two-tier-app:${env.GIT_COMMIT_SHORT}
-      '''
+     """
     }
   }
 }
