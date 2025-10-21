@@ -37,15 +37,15 @@ pipeline {
     }
 
     stage('Push Docker Image to Docker Hub') {
-      steps {
-        script {
-             withCredentials([usernameColonPassword(credentialsId: 'dockercreds', variable: 'dockercreds')]) {
-             sh "docker login -u ${DOCKER_USRNAME} -p ${dockercreds}"
-             }
-          sh "docker push jspunit00/two-tier-app:${env.GIT_COMMIT_SHORT}"
-        }
-      }
+  steps {
+    withCredentials([string(credentialsId: 'dockercreds', variable: 'DOCKER_PASS')]) {
+      sh '''
+        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USRNAME" --password-stdin
+        docker push jspunit00/two-tier-app:${env.GIT_COMMIT_SHORT}
+      '''
     }
+  }
+}
 
     stage('SCM Checkout 2') {
       steps {
