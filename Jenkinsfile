@@ -39,9 +39,9 @@ pipeline {
     stage('Push Docker Image to Docker Hub') {
       steps {
         script {
-          withCredentials([usernamePassword(credentialsId: 'dockercreds', variable: 'dockercreds')]) {
-            sh "docker login -u ${DOCKER_USRNAME} -p ${dockercreds}"
-          }
+             withCredentials([usernameColonPassword(credentialsId: 'dockercreds', variable: 'dockercreds')]) {
+             sh "docker login -u ${DOCKER_USRNAME} -p ${dockercreds}"
+             }
           sh "docker push jspunit00/two-tier-app:${env.GIT_COMMIT_SHORT}"
         }
       }
