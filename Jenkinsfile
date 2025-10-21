@@ -90,8 +90,7 @@ pipeline {
 
             // Push to GitHub (token should be stored securely)
             //withCredentials([string(credentialsId: 'githubpat', variable: 'githubpat')]) {
-            //sh "git push https://${githubpat}@github.com/lunaticfighter/two-tier-app-devops.git HEAD:main"
-}
+            //sh "git push https://${githubpat}@github.com/lunaticfighter/two-tier-app-devops.git HEAD:main"}
           }
 
         }
