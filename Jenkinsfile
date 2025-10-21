@@ -9,6 +9,7 @@ pipeline {
 
   environment {
     DOCKER_USRNAME = 'jspunit00@gmail.com'
+    GITHUB_CREDS = credentials('githubpat')  
   }
 
   stages {
@@ -85,10 +86,11 @@ pipeline {
             sh "git config --global user.name 'punit'"
             sh 'git add .'
             sh 'git commit -m "Update image tag"'
+            sh "git -c http.extraHeader="Authorization: Bearer ${GITHUB_CREDS}" push origin HEAD:main"
 
             // Push to GitHub (token should be stored securely)
-            withCredentials([string(credentialsId: 'githubpat', variable: 'githubpat')]) {
-   sh "git push https://${githubpat}@github.com/lunaticfighter/two-tier-app-devops.git HEAD:main"
+            //withCredentials([string(credentialsId: 'githubpat', variable: 'githubpat')]) {
+            //sh "git push https://${githubpat}@github.com/lunaticfighter/two-tier-app-devops.git HEAD:main"
 }
           }
 
