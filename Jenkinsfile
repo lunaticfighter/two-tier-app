@@ -87,7 +87,7 @@ pipeline {
             sh 'git commit -m "Update image tag"'
 
             // Push to GitHub (token should be stored securely)
-            sh 'git push https://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@github.com/lunaticfighter/two-tier-app-devops.git HEAD:main'
+            sh "git push https://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@github.com/lunaticfighter/two-tier-app-devops.git HEAD:main"
           }
 
         }
